@@ -25,7 +25,7 @@ class Board extends Component {
         });
 
         return (
-            <div className="cf w-100 pa2-ns">
+            <div className="cf w-100">
                 {cards}
             </div>
         );

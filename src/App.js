@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Modal from 'react-modal';
 import Header from './components/header'
 import Board from './components/board'
 import Toolbar from './components/toolbar'
@@ -35,9 +36,20 @@ const predefined_cards = [
     {text: 'ik maak graag iets samen met anderen', group: groups[4], selected: false},
     {text: 'ik betover mijn publiek', group: groups[5], selected: false},
     {text: 'ik laat graag zien wat ik kan', group: groups[5], selected: false},
-    {text: 'ik bereid me goed voor op toonmomenten', group: groups[5], selected: false},
+    {text: 'ik bereid me goed voor op toon-momenten', group: groups[5], selected: false},
     {text: 'ik ben mijn zenuwen de baas als ik iets toon', group: groups[5], selected: false},
 ];
+
+const customStyles = {
+    content : {
+        top                   : '50%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-50%',
+        transform             : 'translate(-50%, -50%)'
+    }
+};
 
 class App extends Component {
     constructor(props) {
@@ -47,10 +59,13 @@ class App extends Component {
             resultsButtonEnabled: false,
             resetButtonEnabled: false,
             numberOfSelectedCards: 0,
+            aboutBoxIsOpen: false
         };
         this.handleClick = this.handleClick.bind(this);
         this.showResults = this.showResults.bind(this);
         this.resetCards = this.resetCards.bind(this);
+        this.openAboutBox = this.openAboutBox.bind(this);
+        this.closeAboutBox = this.closeAboutBox.bind(this);
     }
 
     handleClick(index) {
@@ -65,6 +80,14 @@ class App extends Component {
             resetButtonEnabled: amount > 0,
             numberOfSelectedCards: amount,
         });
+    }
+
+    openAboutBox() {
+        this.setState({aboutBoxIsOpen: true});
+    }
+
+    closeAboutBox() {
+        this.setState({aboutBoxIsOpen: false});
     }
 
     showResults() {
@@ -90,14 +113,26 @@ class App extends Component {
 
     render() {
         return (
-            <div className="container">
-                <Header/>
+            <div className="container avenir">
+                <Header
+                    onShowAbout={this.openAboutBox}
+                />
                 <Toolbar
                     onShowResults={this.showResults}
                     onResetCards={this.resetCards}
                     resultsButtonEnabled={this.state.resultsButtonEnabled}
                     resetButtonEnabled={this.state.resetButtonEnabled}
                 />
+                <Modal
+                    isOpen={this.state.aboutBoxIsOpen}
+                    onRequestClose={this.closeAboutBox}
+                    style={customStyles}
+                >
+                    <button className='fr' onClick={this.closeAboutBox}>Sluit</button>
+                    <h1 className='tc ph6 pv4 avenir'>Artistiek DNA</h1>
+                    <p className='tc avenir gray'>Made by Roeland Van Lembergen</p>
+                    <p className='tc avenir gray'>Source code: <a className='link gray hover-dark-red' href="https://github.com/clayhill/artistic_dna">https://github.com/clayhill/artistic_dna</a></p>
+                </Modal>
                 <Board cards={this.state.cards} onClick={this.handleClick} filterSelectedCards={this.state.filterSelectedCards}/>
             </div>
         );
